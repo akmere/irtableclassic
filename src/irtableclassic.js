@@ -15,7 +15,7 @@ class IrTableClassic {
         this.columns.forEach(column => {
             column.order = null;
         });
-        if(pagination) this.paginationMax = 10;
+        if (pagination) this.paginationMax = 10;
         else this.paginationMax = this.rowsData.length;
         this.paginationRange = [0, this.paginationMax - 1];
         this.visibleRows = this.rowsData;
@@ -44,12 +44,13 @@ class IrTableClassic {
                 let filterValue = event.target.value;
                 console.log(this.rowsData);
                 this.rowsData.forEach(rowData => {
-                    if(rowData[event.target.dataset.key] && rowData[event.target.dataset.key].indexOf(filterValue) > -1) {
+                    if (rowData[event.target.dataset.key] && rowData[event.target.dataset.key].toString().indexOf(filterValue) > -1) {
                         if (rowData.hiddenByFiltersList.indexOf(event.target.dataset.key) > -1) rowData.hiddenByFiltersList.splice(rowData.hiddenByFiltersList.indexOf(event.target.dataset.key), 1);
                     } else {
                         if (rowData.hiddenByFiltersList.indexOf(event.target.dataset.key) == -1) rowData.hiddenByFiltersList.push(event.target.dataset.key);
                     }
                 });
+                this.updateVisibleRows();
                 this.redraw();
             });
             tableHeaderFilter.appendChild(filterInput);
@@ -63,6 +64,7 @@ class IrTableClassic {
         tableHead.appendChild(headerRow);
         table.appendChild(tableHead);
         this.updateVisibleRows();
+        this.updateSortOrder();
         this.visibleRows.slice(0).splice(this.paginationRange[0], this.paginationRange[1] - this.paginationRange[0] + 1).forEach(rowData => {
             let bodyRow = document.createElement('tr');
             this.columns.forEach(column => {
@@ -93,7 +95,7 @@ class IrTableClassic {
         };
         buttonNextPage.onclick = () => {
             let newStart = this.paginationRange[0] + this.paginationMax;
-            if(newStart < this.visibleRows.length) this.updatePagination(newStart);
+            if (newStart < this.visibleRows.length) this.updatePagination(newStart);
         };
         tableFooter.appendChild(paginationElement);
         tableFooter.appendChild(buttonPreviousPage);
@@ -119,17 +121,19 @@ class IrTableClassic {
 
     updateVisibleRows() {
         this.visibleRows = this.rowsData.filter(rowData => rowData.hiddenByFiltersList.length == 0);
-        if(this.paginationRange[0] > this.visibleRows.length) 
-        {
+        if (this.paginationRange[0] > this.visibleRows.length) {
             this.paginationRange[0] = Math.floor(this.visibleRows.length / this.paginationMax) * this.paginationMax;
             this.paginationRange[1] = this.visibleRows.length - 1;
+        }
+        if (this.paginationRange[1] - this.paginationRange[0] + 1 < this.paginationMax) {
+            this.paginationRange[1] = Math.min(this.paginationRange[0] + this.paginationMax - 1, this.visibleRows.length - 1);
         }
     }
 
     handleHeaderClick(event) {
         let order = 'asc';
         let currentOrder = this.columns.find(column => column.key == event.target.dataset.key).order;
-        if(currentOrder == 'desc' || currentOrder == null) {
+        if (currentOrder == 'desc' || currentOrder == null) {
             order = 'asc';
         }
         else order = 'desc';
@@ -158,7 +162,6 @@ class IrTableClassic {
         let paginationElement = null;
         let tableFooter = null;
         let irtableclassicContainer = document.querySelector('.irtableclassic-container');
-        this.updateSortOrder();
         if (document.querySelector('.irtableclassic')) {
             table = document.querySelector('.irtableclassic');
             tableBody = document.querySelector('.irtableclassic tbody');
