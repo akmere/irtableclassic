@@ -37,7 +37,13 @@ class IrTableClassic {
             filterInput.addEventListener('keyup', (event) => {
                 let filterValue = event.target.value;
                 this.rowsData.forEach(rowData => {
-                    if (rowData[event.target.dataset.key] && rowData[event.target.dataset.key].toString().indexOf(filterValue) > -1) {
+                    if (filterValue == '') {
+                        if (rowData.hiddenByFiltersList.indexOf(event.target.dataset.key) > -1) rowData.hiddenByFiltersList.splice(rowData.hiddenByFiltersList.indexOf(event.target.dataset.key), 1);
+                    }
+                    else if(rowData[event.target.dataset.key] === null || rowData[event.target.dataset.key] === undefined) {
+                        if (rowData.hiddenByFiltersList.indexOf(event.target.dataset.key) == -1) rowData.hiddenByFiltersList.push(event.target.dataset.key);
+                    }
+                    else if (rowData[event.target.dataset.key].toString().indexOf(filterValue) > -1) {
                         if (rowData.hiddenByFiltersList.indexOf(event.target.dataset.key) > -1) rowData.hiddenByFiltersList.splice(rowData.hiddenByFiltersList.indexOf(event.target.dataset.key), 1);
                     } else {
                         if (rowData.hiddenByFiltersList.indexOf(event.target.dataset.key) == -1) rowData.hiddenByFiltersList.push(event.target.dataset.key);

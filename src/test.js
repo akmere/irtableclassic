@@ -1,6 +1,6 @@
 let names = ["Alice", "John", "Nina", "Oscar", "Paula", "Robert", "Sarah", "Tom", "Vicky", "William", "Arnold", "Beth", "Chris", "David", "Emily", "Frank", "George", "Hannah", "Ian", "Julia", "Karen", "Larry", "Mark", "Nick", "Olivia", "Patrick", "Quincy", "Rosa", "Steve", "Tina"]
 
-let ages =  [25, 52, 67, 21, 39, 32, 36, 19, 28, 42, 73, 48, 56, 61, 18, 22, 58, 53, 44, 29, 45, 49, 35, 26, 41, 55, 63, 70, 47, 34]
+let ages =  [25, 52, 67, 21, 39, 32, 36, 19, 28, 42, 73, 48, 56, 61, 18, 22, 58, 53, 44, 29, 45, 49, 35, 26, 41, 55, 63, 70, 47, 34, 0]
 
 let cities =  ["New York", "Las Vegas", "Houston", "Chicago", "Miami", "Boston", "Seattle", "Los Angeles", "Atlanta", "Philadelphia", "San Francisco", "Dallas", "San Diego", "Denver", "Portland", "Austin", "Detroit", "Raleigh", "St. Louis", "Orlando", "Charlotte", "Indianapolis", "Pittsburgh", "Tampa", "Minneapolis", "Columbus", "Nashville", "Memphis", "Cleveland"]
 
