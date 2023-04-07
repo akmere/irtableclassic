@@ -43,6 +43,10 @@ const tableData = {
 };
 
 window.onload = function() {
-    let table = new IrTableClassic(tableData.rows, tableData.columns, 10);
-    document.body.appendChild(table.getHtml());
+    let tableContainer = document.createElement('div');
+    tableContainer.classList.add('special-container');
+    document.body.appendChild(tableContainer);
+    let specialContainer = document.querySelector('.special-container');
+    let table = new IrTableClassic(tableData.rows, tableData.columns, specialContainer, 10);
+    table.initialize();
 }

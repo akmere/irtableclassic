@@ -1,12 +1,5 @@
-function htmlToElement(html) {
-    var template = document.createElement('template');
-    html = html.trim(); // Never return a text node of whitespace as the result
-    template.innerHTML = html;
-    return template.content.firstChild;
-}
-
 class IrTableClassic {
-    constructor(rowsData, columns, pagination = null) {
+    constructor(rowsData, columns, container, pagination = null) {
         this.rowsData = rowsData;
         this.rowsData.forEach(rowData => {
             rowData.hiddenByFiltersList = [];
@@ -20,6 +13,7 @@ class IrTableClassic {
         this.paginationRange = [0, this.paginationMax - 1];
         this.visibleRows = this.rowsData;
         this.visibleColumns = [];
+        this.container = container;
     }
 
     getHtml() {
@@ -42,7 +36,6 @@ class IrTableClassic {
             filterInput.dataset.key = column.key;
             filterInput.addEventListener('keyup', (event) => {
                 let filterValue = event.target.value;
-                console.log(this.rowsData);
                 this.rowsData.forEach(rowData => {
                     if (rowData[event.target.dataset.key] && rowData[event.target.dataset.key].toString().indexOf(filterValue) > -1) {
                         if (rowData.hiddenByFiltersList.indexOf(event.target.dataset.key) > -1) rowData.hiddenByFiltersList.splice(rowData.hiddenByFiltersList.indexOf(event.target.dataset.key), 1);
@@ -63,8 +56,8 @@ class IrTableClassic {
         tableHead.appendChild(filterRow);
         tableHead.appendChild(headerRow);
         table.appendChild(tableHead);
-        this.updateVisibleRows();
         this.updateSortOrder();
+        this.updateVisibleRows();
         this.visibleRows.slice(0).splice(this.paginationRange[0], this.paginationRange[1] - this.paginationRange[0] + 1).forEach(rowData => {
             let bodyRow = document.createElement('tr');
             this.columns.forEach(column => {
@@ -79,10 +72,6 @@ class IrTableClassic {
         tableElement.appendChild(table);
         let paginationElement = document.createElement('div');
         paginationElement.classList.add('irtableclassic-pagination');
-        console.log('visible rows');
-        console.log(this.visibleRows);
-        console.log('all rows');
-        console.log(this.rowsData);
         paginationElement.innerHTML = `${this.paginationRange[0] + 1}-${Math.min(this.paginationRange[1] + 1, this.visibleRows.length)} of ${this.visibleRows.length}`;
         let buttonPreviousPage = document.createElement('button');
         let buttonNextPage = document.createElement('button');
@@ -161,12 +150,12 @@ class IrTableClassic {
         let tableBody = null;
         let paginationElement = null;
         let tableFooter = null;
-        let irtableclassicContainer = document.querySelector('.irtableclassic-container');
-        if (document.querySelector('.irtableclassic')) {
-            table = document.querySelector('.irtableclassic');
-            tableBody = document.querySelector('.irtableclassic tbody');
-            paginationElement = document.querySelector('.irtableclassic-pagination');
-            tableFooter = document.querySelector('.irtableclassic-footer');
+        let irtableclassicContainer = this.container.querySelector('.irtableclassic-container');
+        if (this.container.querySelector('.irtableclassic')) {
+            table = this.container.querySelector('.irtableclassic');
+            tableBody = this.container.querySelector('.irtableclassic tbody');
+            paginationElement = this.container.querySelector('.irtableclassic-pagination');
+            tableFooter = this.container.querySelector('.irtableclassic-footer');
             irtableclassicContainer.removeChild(tableFooter);
             table.removeChild(tableBody);
         }
@@ -175,5 +164,9 @@ class IrTableClassic {
         tableFooter = newHtml.querySelector('.irtableclassic-footer');
         table.appendChild(tableBody);
         irtableclassicContainer.appendChild(tableFooter);
+    }
+
+    initialize() {
+        this.container.replaceChildren(this.getHtml());
     }
 }
