@@ -1,3 +1,33 @@
+let names = ["Alice", "John", "Nina", "Oscar", "Paula", "Robert", "Sarah", "Tom", "Vicky", "William", "Arnold", "Beth", "Chris", "David", "Emily", "Frank", "George", "Hannah", "Ian", "Julia", "Karen", "Larry", "Mark", "Nick", "Olivia", "Patrick", "Quincy", "Rosa", "Steve", "Tina"]
+
+let ages =  [25, 52, 67, 21, 39, 32, 36, 19, 28, 42, 73, 48, 56, 61, 18, 22, 58, 53, 44, 29, 45, 49, 35, 26, 41, 55, 63, 70, 47, 34]
+
+let cities =  ["New York", "Las Vegas", "Houston", "Chicago", "Miami", "Boston", "Seattle", "Los Angeles", "Atlanta", "Philadelphia", "San Francisco", "Dallas", "San Diego", "Denver", "Portland", "Austin", "Detroit", "Raleigh", "St. Louis", "Orlando", "Charlotte", "Indianapolis", "Pittsburgh", "Tampa", "Minneapolis", "Columbus", "Nashville", "Memphis", "Cleveland"]
+
+let states =  ["New York", "Nevada", "Texas", "Illinois", "Florida", "Massachusetts", "Washington", "California", "Georgia", "Pennsylvania", "California", "Texas", "California", "Colorado", "Oregon", "Texas", "Michigan", "North Carolina", "Missouri", "Florida", "North Carolina", "Indiana", "Pennsylvania", "Florida", "Minnesota", "Ohio", "Tennessee", "Tennessee", "Ohio"]
+
+let pets = ["Dog", "Cat", "Hamster", "Fish", "Parrot", "Rabbit", "Snake", "Turtle", "Lizard", "Ferret", "Horse", "Goat", "Rat", "Mouse", "Bird", "Sheep", "Gerbil", "Guinea Pig", "Frog", "Crab", "Pig", "Chinchilla", "Bearded Dragon", "Duck", "Skunk", "Chickens", "Gecko", "Tortoise", "Ferret", "Hedgehog"]
+
+let cars = ["Toyota", "Ford", "Honda", "Chevrolet", "Nissan", "Hyundai", "Kia", "Mazda", "Volkswagen", "Subaru", "Audi", "BMW", "Mercedes", "Lexus", "Jeep", "GMC", "Acura", "Dodge", "Ram", "Cadillac", "Infiniti", "Lincoln", "Buick", "Tesla", "Volvo", "Chrysler", "Jaguar", "Mitsubishi", "Mini"]
+
+let jobs = ["Teacher", "Doctor", "Lawyer", "Accountant", "Engineer", "Nurse", "Programmer", "Journalist", "Architect", "Pharmacist", "Police Officer", "Carpenter", "Chef", "Writer", "Electrician", "Plumber", "IT Technician", "Painter", "Mechanic", "Gardener", "Cashier", "Barista", "Hairstylist", "Firefighter", "Designer", "Air Traffic Controller", "Dentist", "Actuary", "Real Estate Agent", "Social Worker"]
+
+let hobbies = ["Reading", "Painting", "Photography", "Gardening", "Writing", "Cooking", "Hiking", "Yoga", "Jogging", "Dancing", "Golf", "Fishing", "Camping", "Biking", "Kayaking", "Surfing", "Sewing", "Bird Watching", "Rock Climbing", "Skateboarding", "Skiing", "Table Tennis", "Collecting", "Carpentry", "Bowling", "Board Games", "Knitting", "Painting", "Singing", "Martial Arts"]
+
+let data = []
+for (let i = 0; i < 100; i++) {
+    let obj = {}
+    obj.name = names[Math.floor(Math.random() * names.length)]
+    obj.age = ages[Math.floor(Math.random() * ages.length)]
+    obj.city = cities[Math.floor(Math.random() * cities.length)]
+    obj.state = states[Math.floor(Math.random() * states.length)]
+    obj.pets = pets[Math.floor(Math.random() * pets.length)]
+    obj.car = cars[Math.floor(Math.random() * cars.length)]
+    obj.job = jobs[Math.floor(Math.random() * jobs.length)]
+    obj.hobby = hobbies[Math.floor(Math.random() * hobbies.length)]
+    data.push(obj)
+}
+
 const tableData = {
     columns: [
         {key: 'name', content: 'Name'},
@@ -9,81 +39,10 @@ const tableData = {
         {key: 'job', content: 'Job'},
         {key: 'hobby', content: `Hobby`}
     ],
-    rows: [
-        {name: 'John', age: '22', city: 'New York', state: 'NY', pets: 'No pets', car: 'Audi', job: 'Developer', hobby: 'Gardening'},
-        {name: 'Susan', age: '45', city: 'Los Angeles', state: 'CA', pets: '3 cats', car: 'Honda', job: 'Lawyer', hobby: 'Yoga'},
-        {name: 'Luke', age: '34', city: 'Chicago', state: 'IL', pets: '2 dogs', car: 'Ford', job: 'Doctor', hobby: 'Swimming'},
-        {name: 'Jack', age: '25', city: 'Houston', state: 'TX', pets: 'No pets', car: 'Chevy', job: 'Teacher', hobby: 'Photography'},
-        {name: 'Anna', age: '41', city: 'Philadelphia', state: 'PA', pets: '1 bird', car: 'Toyota', job: 'Engineer', hobby: 'Travelling'},
-        {name: 'Tom', age: '19', city: 'San Diego', state: 'CA', pets: '2 hamsters', car: 'BMW', job: 'Accountant', hobby: 'Hiking'},
-        {name: 'Alice', age: '38', city: 'Phoenix', state: 'AZ', pets: 'No pets', car: 'Tesla', job: 'Nurse', hobby: 'Painting'},
-        {name: 'Michael', age: '32', city: 'San Francisco', state: 'CA', pets: '1 fish', car: 'Jeep', job: 'Software Developer', hobby: 'Video Games'},
-        {name: 'David', age: '28', city: 'Seattle', state: 'WA', pets: '3 dogs', car: 'Volvo', job: 'Journalist', hobby: 'Surfing'},
-        {name: 'Emily', age: '36', city: 'Washington', state: 'DC', pets: 'No pets', car: 'Lexus', job: 'Artist', hobby: 'Reading'},
-        {name: 'John', age: '22', city: 'New York', state: 'NY', pets: 'No pets', car: 'Audi', job: 'Developer', hobby: 'Gardening'},
-        {name: 'Susan', age: '45', city: 'Los Angeles', state: 'CA', pets: '3 cats', car: 'Honda', job: 'Lawyer', hobby: 'Yoga'},
-        {name: 'Luke', age: '34', city: 'Chicago', state: 'IL', pets: '2 dogs', car: 'Ford', job: 'Doctor', hobby: 'Swimming'},
-        {name: 'Jack', age: '25', city: 'Houston', state: 'TX', pets: 'No pets', car: 'Chevy', job: 'Teacher', hobby: 'Photography'},
-        {name: 'Anna', age: '41', city: 'Philadelphia', state: 'PA', pets: '1 bird', car: 'Toyota', job: 'Engineer', hobby: 'Travelling'},
-        {name: 'Tom', age: '19', city: 'San Diego', state: 'CA', pets: '2 hamsters', car: 'BMW', job: 'Accountant', hobby: 'Hiking'},
-        {name: 'Alice', age: '38', city: 'Phoenix', state: 'AZ', pets: 'No pets', car: 'Tesla', job: 'Nurse', hobby: 'Painting'},
-        {name: 'Michael', age: '32', city: 'San Francisco', state: 'CA', pets: '1 fish', car: 'Jeep', job: 'Software Developer', hobby: 'Video Games'},
-        {name: 'David', age: '28', city: 'Seattle', state: 'WA', pets: '3 dogs', car: 'Volvo', job: 'Journalist', hobby: 'Surfing'},
-        {name: 'Emily', age: '36', city: 'Washington', state: 'DC', pets: 'No pets', car: 'Lexus', job: 'Artist', hobby: 'Reading'},
-        {name: 'John', age: '22', city: 'New York', state: 'NY', pets: 'No pets', car: 'Audi', job: 'Developer', hobby: 'Gardening'},
-        {name: 'Susan', age: '45', city: 'Los Angeles', state: 'CA', pets: '3 cats', car: 'Honda', job: 'Lawyer', hobby: 'Yoga'},
-        {name: 'Luke', age: '34', city: 'Chicago', state: 'IL', pets: '2 dogs', car: 'Ford', job: 'Doctor', hobby: 'Swimming'},
-        {name: 'Jack', age: '25', city: 'Houston', state: 'TX', pets: 'No pets', car: 'Chevy', job: 'Teacher', hobby: 'Photography'},
-        {name: 'Anna', age: '41', city: 'Philadelphia', state: 'PA', pets: '1 bird', car: 'Toyota', job: 'Engineer', hobby: 'Travelling'},
-        {name: 'Tom', age: '19', city: 'San Diego', state: 'CA', pets: '2 hamsters', car: 'BMW', job: 'Accountant', hobby: 'Hiking'},
-        {name: 'Alice', age: '38', city: 'Phoenix', state: 'AZ', pets: 'No pets', car: 'Tesla', job: 'Nurse', hobby: 'Painting'},
-        {name: 'Michael', age: '32', city: 'San Francisco', state: 'CA', pets: '1 fish', car: 'Jeep', job: 'Software Developer', hobby: 'Video Games'},
-        {name: 'David', age: '28', city: 'Seattle', state: 'WA', pets: '3 dogs', car: 'Volvo', job: 'Journalist', hobby: 'Surfing'},
-        {name: 'Emily', age: '36', city: 'Washington', state: 'DC', pets: 'No pets', car: 'Lexus', job: 'Artist', hobby: 'Reading'},
-        {name: 'John', age: '22', city: 'New York', state: 'NY', pets: 'No pets', car: 'Audi', job: 'Developer', hobby: 'Gardening'},
-        {name: 'Susan', age: '45', city: 'Los Angeles', state: 'CA', pets: '3 cats', car: 'Honda', job: 'Lawyer', hobby: 'Yoga'},
-        {name: 'Luke', age: '34', city: 'Chicago', state: 'IL', pets: '2 dogs', car: 'Ford', job: 'Doctor', hobby: 'Swimming'},
-        {name: 'Jack', age: '25', city: 'Houston', state: 'TX', pets: 'No pets', car: 'Chevy', job: 'Teacher', hobby: 'Photography'},
-        {name: 'Anna', age: '41', city: 'Philadelphia', state: 'PA', pets: '1 bird', car: 'Toyota', job: 'Engineer', hobby: 'Travelling'},
-        {name: 'Tom', age: '19', city: 'San Diego', state: 'CA', pets: '2 hamsters', car: 'BMW', job: 'Accountant', hobby: 'Hiking'},
-        {name: 'Alice', age: '38', city: 'Phoenix', state: 'AZ', pets: 'No pets', car: 'Tesla', job: 'Nurse', hobby: 'Painting'},
-        {name: 'Michael', age: '32', city: 'San Francisco', state: 'CA', pets: '1 fish', car: 'Jeep', job: 'Software Developer', hobby: 'Video Games'},
-        {name: 'David', age: '28', city: 'Seattle', state: 'WA', pets: '3 dogs', car: 'Volvo', job: 'Journalist', hobby: 'Surfing'},
-        {name: 'Emily', age: '36', city: 'Washington', state: 'DC', pets: 'No pets', car: 'Lexus', job: 'Artist', hobby: 'Reading'},
-        {name: 'John', age: '22', city: 'New York', state: 'NY', pets: 'No pets', car: 'Audi', job: 'Developer', hobby: 'Gardening'},
-        {name: 'Susan', age: '45', city: 'Los Angeles', state: 'CA', pets: '3 cats', car: 'Honda', job: 'Lawyer', hobby: 'Yoga'},
-        {name: 'Luke', age: '34', city: 'Chicago', state: 'IL', pets: '2 dogs', car: 'Ford', job: 'Doctor', hobby: 'Swimming'},
-        {name: 'Jack', age: '25', city: 'Houston', state: 'TX', pets: 'No pets', car: 'Chevy', job: 'Teacher', hobby: 'Photography'},
-        {name: 'Anna', age: '41', city: 'Philadelphia', state: 'PA', pets: '1 bird', car: 'Toyota', job: 'Engineer', hobby: 'Travelling'},
-        {name: 'Tom', age: '19', city: 'San Diego', state: 'CA', pets: '2 hamsters', car: 'BMW', job: 'Accountant', hobby: 'Hiking'},
-        {name: 'Alice', age: '38', city: 'Phoenix', state: 'AZ', pets: 'No pets', car: 'Tesla', job: 'Nurse', hobby: 'Painting'},
-        {name: 'Michael', age: '32', city: 'San Francisco', state: 'CA', pets: '1 fish', car: 'Jeep', job: 'Software Developer', hobby: 'Video Games'},
-        {name: 'David', age: '28', city: 'Seattle', state: 'WA', pets: '3 dogs', car: 'Volvo', job: 'Journalist', hobby: 'Surfing'},
-        {name: 'Emily', age: '36', city: 'Washington', state: 'DC', pets: 'No pets', car: 'Lexus', job: 'Artist', hobby: 'Reading'},
-        {name: 'John', age: '22', city: 'New York', state: 'NY', pets: 'No pets', car: 'Audi', job: 'Developer', hobby: 'Gardening'},
-        {name: 'Susan', age: '45', city: 'Los Angeles', state: 'CA', pets: '3 cats', car: 'Honda', job: 'Lawyer', hobby: 'Yoga'},
-        {name: 'Luke', age: '34', city: 'Chicago', state: 'IL', pets: '2 dogs', car: 'Ford', job: 'Doctor', hobby: 'Swimming'},
-        {name: 'Jack', age: '25', city: 'Houston', state: 'TX', pets: 'No pets', car: 'Chevy', job: 'Teacher', hobby: 'Photography'},
-        {name: 'Anna', age: '41', city: 'Philadelphia', state: 'PA', pets: '1 bird', car: 'Toyota', job: 'Engineer', hobby: 'Travelling'},
-        {name: 'Tom', age: '19', city: 'San Diego', state: 'CA', pets: '2 hamsters', car: 'BMW', job: 'Accountant', hobby: 'Hiking'},
-        {name: 'Alice', age: '38', city: 'Phoenix', state: 'AZ', pets: 'No pets', car: 'Tesla', job: 'Nurse', hobby: 'Painting'},
-        {name: 'Michael', age: '32', city: 'San Francisco', state: 'CA', pets: '1 fish', car: 'Jeep', job: 'Software Developer', hobby: 'Video Games'},
-        {name: 'David', age: '28', city: 'Seattle', state: 'WA', pets: '3 dogs', car: 'Volvo', job: 'Journalist', hobby: 'Surfing'},
-        {name: 'Emily', age: '36', city: 'Washington', state: 'DC', pets: 'No pets', car: 'Lexus', job: 'Artist', hobby: 'Reading'},
-        {name: 'John', age: '22', city: 'New York', state: 'NY', pets: 'No pets', car: 'Audi', job: 'Developer', hobby: 'Gardening'},
-        {name: 'Susan', age: '45', city: 'Los Angeles', state: 'CA', pets: '3 cats', car: 'Honda', job: 'Lawyer', hobby: 'Yoga'},
-        {name: 'Luke', age: '34', city: 'Chicago', state: 'IL', pets: '2 dogs', car: 'Ford', job: 'Doctor', hobby: 'Swimming'},
-        {name: 'Jack', age: '25', city: 'Houston', state: 'TX', pets: 'No pets', car: 'Chevy', job: 'Teacher', hobby: 'Photography'},
-        {name: 'Anna', age: '41', city: 'Philadelphia', state: 'PA', pets: '1 bird', car: 'Toyota', job: 'Engineer', hobby: 'Travelling'},
-        {name: 'Tom', age: '19', city: 'San Diego', state: 'CA', pets: '2 hamsters', car: 'BMW', job: 'Accountant', hobby: 'Hiking'},
-        {name: 'Alice', age: '38', city: 'Phoenix', state: 'AZ', pets: 'No pets', car: 'Tesla', job: 'Nurse', hobby: 'Painting'},
-        {name: 'Michael', age: '32', city: 'San Francisco', state: 'CA', pets: '1 fish', car: 'Jeep', job: 'Software Developer', hobby: 'Video Games'},
-        {name: 'David', age: '28', city: 'Seattle', state: 'WA', pets: '3 dogs', car: 'Volvo', job: 'Journalist', hobby: 'Surfing'},
-        {name: 'Emily', age: '36', city: 'Washington', state: 'DC', pets: 'No pets', car: 'Lexus', job: 'Artist', hobby: 'Reading'},
-    ]
+    rows: data
 };
 
 window.onload = function() {
-    let table = new IrTableClassic(tableData.rows, tableData.columns);
+    let table = new IrTableClassic(tableData.rows, tableData.columns, 10);
     document.body.appendChild(table.getHtml());
 }
