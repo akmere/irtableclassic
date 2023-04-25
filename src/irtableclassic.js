@@ -1,8 +1,9 @@
 class IrTableClassic {
-    constructor(rowsData, columns, container, {pagination =  null, rowHeight = '50px', headerHeight = '30px', filterHeight = '30px', minWidth = null}) {
+    constructor(rowsData, columns, container, {pagination =  null, rowHeight = '50px', headerHeight = '30px', filterHeight = '30px', minWidth = null, height = null, selectableRows = false}) {
         this.rowsData = rowsData;
-        this.rowsData.forEach(rowData => {
+        this.rowsData.forEach((rowData, index) => {
             rowData.hiddenByFiltersList = [];
+            if(!rowData.key) rowData.key = index;
         });
         this.columns = columns;
         this.columns.forEach(column => {
@@ -18,6 +19,9 @@ class IrTableClassic {
         this.headerHeight = headerHeight;
         this.filterHeight = filterHeight;
         this.minWidth = minWidth;
+        this.selectableRows = selectableRows;
+        if(height == 'match' && pagination) this.height = pagination * parseInt(rowHeight) + parseInt(headerHeight) + parseInt(filterHeight) + 'px';
+        else if (height == 'match') this.height = this.rowsData.length * parseInt(rowHeight) + parseInt(headerHeight) + parseInt(filterHeight) + 'px';
     }
 
     getHtml() {
@@ -25,7 +29,8 @@ class IrTableClassic {
         tableElement.classList.add('irtableclassic-container');
         let table = document.createElement('div');
         table.classList.add('irtableclassic');
-        if(this.minWidth) table.style.minWidth = this.minWidth;
+        if(this.minWidth) tableElement.style.minWidth = this.minWidth;
+        if(this.height) tableElement.style.height = this.height;
         let tableHead = document.createElement('div');
         tableHead.classList.add('irtableclassic-head');
         let tableBody = document.createElement('div');
@@ -83,8 +88,27 @@ class IrTableClassic {
         this.updateVisibleRows();
         this.visibleRows.slice(0).splice(this.paginationRange[0], this.paginationRange[1] - this.paginationRange[0] + 1).forEach(rowData => {
             let bodyRow = document.createElement('div');
+            bodyRow.dataset.key = rowData.key;
             bodyRow.classList.add('irtableclassic-data-row');
             bodyRow.style.height = this.rowHeight;
+            if(this.selectableRows) {
+                bodyRow.classList.add('irtableclassic-selectable');
+                bodyRow.addEventListener('click', (event) => {
+                    let wasSelected = bodyRow.classList.contains('row-selected');
+                    if(event.ctrlKey) {
+                        if(bodyRow.classList.contains('row-selected')) bodyRow.classList.remove('row-selected');
+                        else bodyRow.classList.add('row-selected');
+                    }
+                    else {
+                        let selectedRows = document.querySelectorAll('.irtableclassic-selectable.row-selected');
+                        selectedRows.forEach(selectedRow => {
+                            selectedRow.classList.remove('row-selected');
+                        });
+                        if(!wasSelected) bodyRow.classList.add('row-selected');
+                    }
+                    tableElement.dispatchEvent(new CustomEvent('rowSelection', {detail: {rowsSelected: [...document.querySelectorAll('.irtableclassic-selectable.row-selected')].map(row => row.dataset.key)}}));
+                });
+            }
             console.log(this.rowHeight);
             this.columns.forEach(column => {
                 let bodyRowData = document.createElement('div');

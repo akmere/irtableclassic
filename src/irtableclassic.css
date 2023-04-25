@@ -65,3 +65,7 @@
 .irtableclassic-header {
     font-weight: bold;
 }
+
+.row-selected {
+    background-color: #e6e6e6;
+}
