@@ -1,5 +1,5 @@
 class IrTableClassic {
-    constructor(rowsData, columns, container, pagination = null) {
+    constructor(rowsData, columns, container, {pagination =  null, rowHeight = '50px', headerHeight = '30px', filterHeight = '30px', minWidth = null}) {
         this.rowsData = rowsData;
         this.rowsData.forEach(rowData => {
             rowData.hiddenByFiltersList = [];
@@ -8,29 +8,46 @@ class IrTableClassic {
         this.columns.forEach(column => {
             column.order = null;
         });
-        if (pagination) this.paginationMax = 10;
+        if (pagination) this.paginationMax = pagination;
         else this.paginationMax = this.rowsData.length;
         this.paginationRange = [0, this.paginationMax - 1];
         this.visibleRows = this.rowsData;
         this.visibleColumns = [];
         this.container = container;
+        this.rowHeight = rowHeight;
+        this.headerHeight = headerHeight;
+        this.filterHeight = filterHeight;
+        this.minWidth = minWidth;
     }
 
     getHtml() {
         let tableElement = document.createElement('div');
         tableElement.classList.add('irtableclassic-container');
-        let table = document.createElement('table');
+        let table = document.createElement('div');
         table.classList.add('irtableclassic');
-        let tableHead = document.createElement('thead');
-        let tableBody = document.createElement('tbody');
+        if(this.minWidth) table.style.minWidth = this.minWidth;
+        let tableHead = document.createElement('div');
+        tableHead.classList.add('irtableclassic-head');
+        let tableBody = document.createElement('div');
+        tableBody.classList.add('irtableclassic-body');
         let tableFooter = document.createElement('div');
         tableFooter.classList.add('irtableclassic-footer');
-        let filterRow = document.createElement('tr');
-        let headerRow = document.createElement('tr');
+        let filterRow = document.createElement('div');
+        filterRow.classList.add('irtableclassic-filter');
+        filterRow.style.height = this.filterHeight;
+        let headerRow = document.createElement('div');
+        headerRow.classList.add('irtableclassic-header');
+        headerRow.style.height = this.headerHeight;
         this.columns.forEach(column => {
-            let tableHeader = document.createElement('th');
-            let tableHeaderFilter = document.createElement('th');
+            let tableHeader = document.createElement('div');
+            tableHeader.classList.add('irtableclassic-header-cell');
+            tableHeader.classList.add('irtableclassic-cell');
+            let tableHeaderFilter = document.createElement('div');
+            tableHeaderFilter.classList.add('irtableclassic-filter-cell');
+            tableHeaderFilter.classList.add('irtableclassic-cell');
+            tableHeaderFilter.dataset.key = column.key;
             let filterInput = document.createElement('input');
+            filterInput.style.width = '100%';
             filterInput.setAttribute('type', 'text');
             filterInput.setAttribute('placeholder', `Filter ${column.content}`);
             filterInput.dataset.key = column.key;
@@ -65,9 +82,14 @@ class IrTableClassic {
         this.updateSortOrder();
         this.updateVisibleRows();
         this.visibleRows.slice(0).splice(this.paginationRange[0], this.paginationRange[1] - this.paginationRange[0] + 1).forEach(rowData => {
-            let bodyRow = document.createElement('tr');
+            let bodyRow = document.createElement('div');
+            bodyRow.classList.add('irtableclassic-data-row');
+            bodyRow.style.height = this.rowHeight;
+            console.log(this.rowHeight);
             this.columns.forEach(column => {
-                let bodyRowData = document.createElement('td');
+                let bodyRowData = document.createElement('div');
+                bodyRowData.classList.add('irtableclassic-data-cell');
+                bodyRowData.classList.add('irtableclassic-cell');
                 bodyRowData.innerHTML = rowData[column.key];
                 bodyRowData.dataset.key = column.key;
                 bodyRow.appendChild(bodyRowData);
@@ -96,6 +118,16 @@ class IrTableClassic {
         tableFooter.appendChild(buttonPreviousPage);
         tableFooter.appendChild(buttonNextPage);
         tableElement.appendChild(tableFooter);
+
+        this.columns.forEach(column => {
+            [...tableElement.querySelectorAll(`.irtableclassic-cell[data-key="${column.key}"]`)].forEach(cell => {
+                cell.style.flex = column.flex ? column.flex : '1';
+                if(column.minWidth) cell.style.minWidth = column.minWidth;
+                cell.style.width = '0';
+            })
+            
+        });
+
         return tableElement;
     }
 
@@ -159,14 +191,14 @@ class IrTableClassic {
         let irtableclassicContainer = this.container.querySelector('.irtableclassic-container');
         if (this.container.querySelector('.irtableclassic')) {
             table = this.container.querySelector('.irtableclassic');
-            tableBody = this.container.querySelector('.irtableclassic tbody');
+            tableBody = this.container.querySelector('.irtableclassic-body');
             paginationElement = this.container.querySelector('.irtableclassic-pagination');
             tableFooter = this.container.querySelector('.irtableclassic-footer');
             irtableclassicContainer.removeChild(tableFooter);
             table.removeChild(tableBody);
         }
         let newHtml = this.getHtml();
-        tableBody = newHtml.querySelector('tbody');
+        tableBody = newHtml.querySelector('.irtableclassic-body');
         tableFooter = newHtml.querySelector('.irtableclassic-footer');
         table.appendChild(tableBody);
         irtableclassicContainer.appendChild(tableFooter);
