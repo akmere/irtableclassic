@@ -1,5 +1,5 @@
 class IrTableClassic {
-    constructor(rowsData, columns, container, { pagination = null, rowHeight = '50px', headerHeight = '30px', filterHeight = '30px', minWidth = null, height = null, selectableRows = false, filteredByDefault = true}) {
+    constructor(rowsData, columns, container, { pagination = null, rowHeight = '50px', maxHeight = null, headerHeight = '30px', filterHeight = '30px', minWidth = null, height = null, selectableRows = false, filteredByDefault = true}) {
         this.rowsData = rowsData;
         this.rowsData.forEach((rowData, index) => {
             rowData.hiddenByFiltersList = [];
@@ -20,9 +20,11 @@ class IrTableClassic {
         this.headerHeight = headerHeight;
         this.filterHeight = filterHeight;
         this.minWidth = minWidth;
+        this.maxHeight = maxHeight;
         this.selectableRows = selectableRows;
         if (height == 'match' && pagination) this.height = pagination * parseInt(rowHeight) + parseInt(headerHeight) + parseInt(filterHeight) + 'px';
         else if (height == 'match') this.height = this.rowsData.length * parseInt(rowHeight) + parseInt(headerHeight) + parseInt(filterHeight) + 'px';
+        else if (height) this.height = height;
     }
 
     getHtml() {
@@ -36,6 +38,7 @@ class IrTableClassic {
         tableHead.classList.add('irtableclassic-head');
         let tableBody = document.createElement('div');
         tableBody.classList.add('irtableclassic-body');
+        tableBody.style.overflow = 'auto';
         let tableFooter = document.createElement('div');
         tableFooter.classList.add('irtableclassic-footer');
         let filterRow = document.createElement('div');
