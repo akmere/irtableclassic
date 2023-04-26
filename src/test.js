@@ -15,10 +15,10 @@ let jobs = ["Teacher", "Doctor", "Lawyer", "Accountant", "Engineer", "Nurse", "P
 let hobbies = ["Reading", "Painting", "Photography", "Gardening", "Writing", "Cooking", "Hiking", "Yoga", "Jogging", "Dancing", "Golf", "Fishing", "Camping", "Biking", "Kayaking", "Surfing", "Sewing", "Bird Watching", "Rock Climbing", "Skateboarding", "Skiing", "Table Tennis", "Collecting", "Carpentry", "Bowling", "Board Games", "Knitting", "Painting", "Singing", "Martial Arts"]
 
 let data = []
-for (let i = 0; i < 100; i++) {
+for (let i = 0; i < 1000; i++) {
     let obj = {}
     obj.name = names[Math.floor(Math.random() * names.length)]
-    obj.age = ages[Math.floor(Math.random() * ages.length)]
+    obj.age = Math.floor(Math.random() * 100);
     obj.city = cities[Math.floor(Math.random() * cities.length)]
     obj.state = states[Math.floor(Math.random() * states.length)]
     obj.pets = pets[Math.floor(Math.random() * pets.length)]
@@ -35,9 +35,29 @@ const tableData = {
         {key: 'city', content: 'City'},
         {key: 'state', content: 'State'},
         {key: 'pets', content: 'Pets'},
-        {key: 'car', content: 'Car'},
+        {key: 'car', content: 'Car', filtered: false},
         {key: 'job', content: 'Job'},
-        {key: 'hobby', content: `Hobby`}
+        {key: 'hobby', content: `Hobby`},
+        // {key: 'hobby2', content: `Hobby`},
+        // {key: 'hobb2y', content: `Hobby`},
+        // {key: 'hobb23y', content: `Hobby`},
+        // {key: 'ho6b4fby', content: `Hobby`},
+        // {key: 'ho6b4bay', content: `Hobby`},
+        // {key: 'ho6bx4by', content: `Hobby`},
+        // {key: 'ho6bz4by', content: `Hobby`},
+        // {key: 'ho6bz43by', content: `Hobby`},
+        // {key: 'ho6b215z4by', content: `Hobby`},
+        // {key: 'ho6bz44by', content: `Hobby`},
+        // {key: 'ho6b1325z4by', content: `Hobby`},
+        // {key: 'ho6bz2154by', content: `Hobby`},
+        // {key: 'ho6b1325z4by', content: `Hobby`},
+        // {key: 'ho6bz215521354by', content: `Hobby`},
+        // {key: 'ho6b13252315z4by', content: `Hobby`},
+        // {key: 'ho6bz2121362154by', content: `Hobby`},
+        // {key: 'ho6b132215z4by', content: `Hobby`},
+        // {key: 'ho6bz21235154by', content: `Hobby`},
+        // {key: 'ho6b1312525z4by', content: `Hobby`},
+        // {key: 'ho6135bz2154by', content: `Hobby`}
     ],
     rows: data
 };
@@ -47,6 +67,6 @@ window.onload = function() {
     tableContainer.classList.add('special-container');
     document.body.appendChild(tableContainer);
     let specialContainer = document.querySelector('.special-container');
-    let table = new IrTableClassic(tableData.rows, tableData.columns, specialContainer, 10);
+    let table = new IrTableClassic(tableData.rows, tableData.columns, specialContainer, {pagination: 10, minWidth: '1000px', height: 'match', selectableRows: true});
     table.initialize();
 }

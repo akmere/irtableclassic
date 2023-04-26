@@ -1,13 +1,14 @@
 class IrTableClassic {
-    constructor(rowsData, columns, container, {pagination =  null, rowHeight = '50px', headerHeight = '30px', filterHeight = '30px', minWidth = null, height = null, selectableRows = false}) {
+    constructor(rowsData, columns, container, { pagination = null, rowHeight = '50px', headerHeight = '30px', filterHeight = '30px', minWidth = null, height = null, selectableRows = false, filteredByDefault = true}) {
         this.rowsData = rowsData;
         this.rowsData.forEach((rowData, index) => {
             rowData.hiddenByFiltersList = [];
-            if(!rowData.key) rowData.key = index;
+            if (!rowData.index) rowData.index = index;
         });
         this.columns = columns;
         this.columns.forEach(column => {
             column.order = null;
+            if (column.filtered === undefined) column.filtered = filteredByDefault;
         });
         if (pagination) this.paginationMax = pagination;
         else this.paginationMax = this.rowsData.length;
@@ -20,7 +21,7 @@ class IrTableClassic {
         this.filterHeight = filterHeight;
         this.minWidth = minWidth;
         this.selectableRows = selectableRows;
-        if(height == 'match' && pagination) this.height = pagination * parseInt(rowHeight) + parseInt(headerHeight) + parseInt(filterHeight) + 'px';
+        if (height == 'match' && pagination) this.height = pagination * parseInt(rowHeight) + parseInt(headerHeight) + parseInt(filterHeight) + 'px';
         else if (height == 'match') this.height = this.rowsData.length * parseInt(rowHeight) + parseInt(headerHeight) + parseInt(filterHeight) + 'px';
     }
 
@@ -29,8 +30,8 @@ class IrTableClassic {
         tableElement.classList.add('irtableclassic-container');
         let table = document.createElement('div');
         table.classList.add('irtableclassic');
-        if(this.minWidth) tableElement.style.minWidth = this.minWidth;
-        if(this.height) tableElement.style.height = this.height;
+        if (this.minWidth) tableElement.style.minWidth = this.minWidth;
+        if (this.height) tableElement.style.height = this.height;
         let tableHead = document.createElement('div');
         tableHead.classList.add('irtableclassic-head');
         let tableBody = document.createElement('div');
@@ -51,30 +52,32 @@ class IrTableClassic {
             tableHeaderFilter.classList.add('irtableclassic-filter-cell');
             tableHeaderFilter.classList.add('irtableclassic-cell');
             tableHeaderFilter.dataset.key = column.key;
-            let filterInput = document.createElement('input');
-            filterInput.style.width = '100%';
-            filterInput.setAttribute('type', 'text');
-            filterInput.setAttribute('placeholder', `Filter ${column.content}`);
-            filterInput.dataset.key = column.key;
-            filterInput.addEventListener('keyup', (event) => {
-                let filterValue = event.target.value;
-                this.rowsData.forEach(rowData => {
-                    if (filterValue == '') {
-                        if (rowData.hiddenByFiltersList.indexOf(event.target.dataset.key) > -1) rowData.hiddenByFiltersList.splice(rowData.hiddenByFiltersList.indexOf(event.target.dataset.key), 1);
-                    }
-                    else if(rowData[event.target.dataset.key] === null || rowData[event.target.dataset.key] === undefined) {
-                        if (rowData.hiddenByFiltersList.indexOf(event.target.dataset.key) == -1) rowData.hiddenByFiltersList.push(event.target.dataset.key);
-                    }
-                    else if (rowData[event.target.dataset.key].toString().indexOf(filterValue) > -1) {
-                        if (rowData.hiddenByFiltersList.indexOf(event.target.dataset.key) > -1) rowData.hiddenByFiltersList.splice(rowData.hiddenByFiltersList.indexOf(event.target.dataset.key), 1);
-                    } else {
-                        if (rowData.hiddenByFiltersList.indexOf(event.target.dataset.key) == -1) rowData.hiddenByFiltersList.push(event.target.dataset.key);
-                    }
+            if (column.filtered) {
+                let filterInput = document.createElement('input');
+                filterInput.style.width = '100%';
+                filterInput.setAttribute('type', 'text');
+                filterInput.setAttribute('placeholder', `Filter ${column.content}`);
+                filterInput.dataset.key = column.key;
+                filterInput.addEventListener('keyup', (event) => {
+                    let filterValue = event.target.value;
+                    this.rowsData.forEach(rowData => {
+                        if (filterValue == '') {
+                            if (rowData.hiddenByFiltersList.indexOf(event.target.dataset.key) > -1) rowData.hiddenByFiltersList.splice(rowData.hiddenByFiltersList.indexOf(event.target.dataset.key), 1);
+                        }
+                        else if (rowData[event.target.dataset.key] === null || rowData[event.target.dataset.key] === undefined) {
+                            if (rowData.hiddenByFiltersList.indexOf(event.target.dataset.key) == -1) rowData.hiddenByFiltersList.push(event.target.dataset.key);
+                        }
+                        else if (rowData[event.target.dataset.key].toString().indexOf(filterValue) > -1) {
+                            if (rowData.hiddenByFiltersList.indexOf(event.target.dataset.key) > -1) rowData.hiddenByFiltersList.splice(rowData.hiddenByFiltersList.indexOf(event.target.dataset.key), 1);
+                        } else {
+                            if (rowData.hiddenByFiltersList.indexOf(event.target.dataset.key) == -1) rowData.hiddenByFiltersList.push(event.target.dataset.key);
+                        }
+                    });
+                    this.updateVisibleRows();
+                    this.redraw();
                 });
-                this.updateVisibleRows();
-                this.redraw();
-            });
-            tableHeaderFilter.appendChild(filterInput);
+                tableHeaderFilter.appendChild(filterInput);
+            }
             tableHeader.innerHTML = column.content;
             tableHeader.dataset.key = column.key;
             tableHeader.addEventListener('click', (event) => this.handleHeaderClick(event));
@@ -88,15 +91,15 @@ class IrTableClassic {
         this.updateVisibleRows();
         this.visibleRows.slice(0).splice(this.paginationRange[0], this.paginationRange[1] - this.paginationRange[0] + 1).forEach(rowData => {
             let bodyRow = document.createElement('div');
-            bodyRow.dataset.key = rowData.key;
+            bodyRow.dataset.index = rowData.index;
             bodyRow.classList.add('irtableclassic-data-row');
             bodyRow.style.height = this.rowHeight;
-            if(this.selectableRows) {
+            if (this.selectableRows) {
                 bodyRow.classList.add('irtableclassic-selectable');
                 bodyRow.addEventListener('click', (event) => {
                     let wasSelected = bodyRow.classList.contains('row-selected');
-                    if(event.ctrlKey) {
-                        if(bodyRow.classList.contains('row-selected')) bodyRow.classList.remove('row-selected');
+                    if (event.ctrlKey) {
+                        if (bodyRow.classList.contains('row-selected')) bodyRow.classList.remove('row-selected');
                         else bodyRow.classList.add('row-selected');
                     }
                     else {
@@ -104,9 +107,9 @@ class IrTableClassic {
                         selectedRows.forEach(selectedRow => {
                             selectedRow.classList.remove('row-selected');
                         });
-                        if(!wasSelected) bodyRow.classList.add('row-selected');
+                        if (!wasSelected) bodyRow.classList.add('row-selected');
                     }
-                    tableElement.dispatchEvent(new CustomEvent('rowSelection', {detail: {rowsSelected: [...document.querySelectorAll('.irtableclassic-selectable.row-selected')].map(row => row.dataset.key)}}));
+                    tableElement.dispatchEvent(new CustomEvent('rowSelection', { detail: { rowsSelected: [...document.querySelectorAll('.irtableclassic-selectable.row-selected')].map(row => row.dataset.index) } }));
                 });
             }
             console.log(this.rowHeight);
@@ -146,10 +149,10 @@ class IrTableClassic {
         this.columns.forEach(column => {
             [...tableElement.querySelectorAll(`.irtableclassic-cell[data-key="${column.key}"]`)].forEach(cell => {
                 cell.style.flex = column.flex ? column.flex : '1';
-                if(column.minWidth) cell.style.minWidth = column.minWidth;
+                if (column.minWidth) cell.style.minWidth = column.minWidth;
                 cell.style.width = '0';
             })
-            
+
         });
 
         return tableElement;
