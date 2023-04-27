@@ -38,7 +38,6 @@ class IrTableClassic {
         tableHead.classList.add('irtableclassic-head');
         let tableBody = document.createElement('div');
         tableBody.classList.add('irtableclassic-body');
-        tableBody.style.overflow = 'auto';
         let tableFooter = document.createElement('div');
         tableFooter.classList.add('irtableclassic-footer');
         let filterRow = document.createElement('div');
@@ -147,7 +146,7 @@ class IrTableClassic {
         tableFooter.appendChild(paginationElement);
         tableFooter.appendChild(buttonPreviousPage);
         tableFooter.appendChild(buttonNextPage);
-        tableElement.appendChild(tableFooter);
+        table.appendChild(tableFooter);
 
         this.columns.forEach(column => {
             [...tableElement.querySelectorAll(`.irtableclassic-cell[data-key="${column.key}"]`)].forEach(cell => {
@@ -224,14 +223,14 @@ class IrTableClassic {
             tableBody = this.container.querySelector('.irtableclassic-body');
             paginationElement = this.container.querySelector('.irtableclassic-pagination');
             tableFooter = this.container.querySelector('.irtableclassic-footer');
-            irtableclassicContainer.removeChild(tableFooter);
+            table.removeChild(tableFooter);
             table.removeChild(tableBody);
         }
         let newHtml = this.getHtml();
         tableBody = newHtml.querySelector('.irtableclassic-body');
         tableFooter = newHtml.querySelector('.irtableclassic-footer');
         table.appendChild(tableBody);
-        irtableclassicContainer.appendChild(tableFooter);
+        table.appendChild(tableFooter);
     }
 
     initialize() {

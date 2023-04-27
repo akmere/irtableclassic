@@ -16,34 +16,28 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    /* min-width: min-content; */
+    overflow-x: auto;
+    overflow-y: scroll;
 }
 
-.irtableclassic > thead > tr > th {
-    border: 1px solid #000000;
-    padding: 0.5em;
-    text-align: left;
-}
-
-.irtableclassic > tbody > tr > td {
-    border: 1px solid #000000;
-    padding: 0.5em;
-    text-align: left;
-}
-
-.irtableclassic > tfoot > tr > td {
-    border: 1px solid #000000;
-    padding: 0.5em;
-    text-align: left;
+.irtableclassic-body {
+    width: fit-content;
 }
 
 .irtableclassic-footer {
-    border: 1px solid #000000;
+    border-top: 1px solid #000000;
     padding: 0.5em;
     display: flex;
     justify-content: right;
     gap: 5px;
     align-items: center;
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    background-color: inherit;
+    /* align to the bottom of parent */
+    margin-top: auto;
 }
 
 .irtableclassic-filter, .irtableclassic-header, .irtableclassic-data-row, .irtableclassic-footer {
@@ -58,7 +52,7 @@
     padding: 0 5px;
     overflow: hidden;
     padding: 0 10px;
-    /* min-width: 150px; */
+    min-width: 150px;
 }
 
 .irtableclassic-cell:hover {
@@ -69,6 +63,14 @@
     font-weight: bold;
 }
 
+.irtableclassic-head {
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: inherit;
+}
 .row-selected {
     background-color: #e6e6e6;
 }
