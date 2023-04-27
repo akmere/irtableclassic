@@ -1,5 +1,5 @@
 class IrTableClassic {
-    constructor(rowsData, columns, container, { pagination = null, rowHeight = '50px', maxHeight = null, headerHeight = '30px', filterHeight = '30px', minWidth = null, height = null, selectableRows = false, filteredByDefault = true}) {
+    constructor(rowsData, columns, container, { pagination = null, rowHeight = '50px', maxHeight = null, headerHeight = null, filterHeight = '30px', minWidth = null, height = null, selectableRows = false, filteredByDefault = true}) {
         this.rowsData = rowsData;
         this.rowsData.forEach((rowData, index) => {
             rowData.hiddenByFiltersList = [];
@@ -45,7 +45,7 @@ class IrTableClassic {
         filterRow.style.height = this.filterHeight;
         let headerRow = document.createElement('div');
         headerRow.classList.add('irtableclassic-header');
-        headerRow.style.height = this.headerHeight;
+        if(this.headerHeight) headerRow.style.height = this.headerHeight;
         this.columns.forEach(column => {
             let tableHeader = document.createElement('div');
             tableHeader.classList.add('irtableclassic-header-cell');
