@@ -21,6 +21,13 @@
 }
 
 .irtableclassic-body {
+    /* width: 100%; */
+}
+
+.irtableclassic-data-row {
+    min-width: 100%;
+    width: fit-content;
+    /* width: fit-content; */
 }
 
 .irtableclassic-footer {

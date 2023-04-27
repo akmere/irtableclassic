@@ -1,9 +1,10 @@
 function getContentWidth(element) {
     var styles = getComputedStyle(element)
 
-    return element.clientWidth
-        - parseFloat(styles.paddingLeft)
-        - parseFloat(styles.paddingRight)
+    // return element.clientWidth
+    //     - parseFloat(styles.paddingLeft)
+    //     - parseFloat(styles.paddingRight)
+    return element.offsetWidth;
 }
 
 function htmlToElement(html) {
@@ -25,7 +26,7 @@ function measure(el, fn) {
 }
 
 class IrTableClassic {
-    constructor(rowsData, columns, container, { pagination = null, rowHeight = '50px', maxHeight = null, headerHeight = null, filterHeight = '30px', minWidth = null, height = null, selectableRows = false, filteredByDefault = true, fitRowHeight = false, fitRowWidth = false }) {
+    constructor(rowsData, columns, container, { pagination = null, rowHeight = '50px', minRowHeight = '10px',maxHeight = null, headerHeight = null, filterHeight = '30px', minWidth = null, height = null, selectableRows = false, filteredByDefault = true, fitRowHeight = false, fitRowWidth = false }) {
         this.rowsData = rowsData;
         this.rowsData.forEach((rowData, index) => {
             rowData.hiddenByFiltersList = [];
@@ -43,6 +44,7 @@ class IrTableClassic {
         this.visibleColumns = [];
         this.container = container;
         this.rowHeight = rowHeight;
+        this.minRowHeight = minRowHeight;
         this.headerHeight = headerHeight;
         this.filterHeight = filterHeight;
         this.minWidth = minWidth;
@@ -50,6 +52,7 @@ class IrTableClassic {
         this.fitRowHeight = fitRowHeight;
         this.selectableRows = selectableRows;
         this.fitRowWidth = fitRowWidth;
+        this.fitColumnWidths = {};
         if (height == 'match' && pagination) this.height = pagination * parseInt(rowHeight) + parseInt(headerHeight) + parseInt(filterHeight) + 'px';
         else if (height == 'match') this.height = this.rowsData.length * parseInt(rowHeight) + parseInt(headerHeight) + parseInt(filterHeight) + 'px';
         else if (height) this.height = height;
@@ -148,6 +151,7 @@ class IrTableClassic {
                 let bodyRowData = document.createElement('div');
                 bodyRowData.classList.add('irtableclassic-data-cell');
                 bodyRowData.classList.add('irtableclassic-cell');
+                // bodyRowData.style.minHeight = this.minRowHeight;
                 if(rowData[column.key] !== undefined && rowData[column.key] !== null) bodyRowData.innerHTML = rowData[column.key];
                 bodyRowData.dataset.key = column.key;
                 if (this.fitRowHeight) bodyRowData.style.height = 'fit-content';
@@ -179,51 +183,56 @@ class IrTableClassic {
         table.appendChild(tableFooter);
 
         this.columns.forEach(column => {
-            let minWidth = 0;
-            let longestHtmlLength = 0;
-            let longestHtmlCell = null;
             [...tableElement.querySelectorAll(`.irtableclassic-cell[data-key="${column.key}"]`)].forEach(cell => {
                 cell.style.flex = column.flex ? column.flex : '1 1 0';
                 cell.style.width = '0';
             });
+        });
 
+        this.columns.forEach(column => {
             if (this.fitRowWidth) {
-                let rowCellOfMostHtmlLength = null;
-                let columnInTable = [...tableElement.querySelectorAll(`.irtableclassic-header-cell[data-key="${column.key}"]`)][0];
-                let maxHtmlLength = this.rowsData.reduce((max, row) => {
-                    if (row[column.key]) {
-                        let htmlLength = row[column.key].toString().length;
-                        if (htmlLength > max || rowCellOfMostHtmlLength == null) {
-                            rowCellOfMostHtmlLength = row[column.key];
-                            return htmlLength;
-                        }
-                        else return max;
-                    } else return max;
-                }, 0);
-                // [...tableElement.querySelectorAll(`.irtableclassic-data-cell[data-key="${column.key}"]`)].forEach(cell => {
-                //     let htmlLength = cell.innerHTML.length;
-                //     if (htmlLength >= longestHtmlLength) {
-                //         longestHtmlLength = htmlLength;
-                //         longestHtmlCell = cell;
-                //     }
-                //     // let elementWidth = measure(cell, el => getContentWidth(el));
-                //     // console.log(`element width: ${elementWidth}`);
-                //     // if (elementWidth > minWidth) minWidth = elementWidth;
-                // });
-                let biggestCell = document.createElement('div');
-                biggestCell.innerHTML = rowCellOfMostHtmlLength;
-                let biggestWidth = measure(biggestCell, el => getContentWidth(el));
-                let columnWidth = measure(columnInTable, el => getContentWidth(el));
-                if(columnWidth > biggestWidth) biggestWidth = columnWidth;
-                console.log(`setting ${column.key} to ${minWidth}`);
+                let biggestWidth = this.getWidthToMatchOfColumn(column.key, tableElement);
                 [...tableElement.querySelectorAll(`.irtableclassic-cell[data-key="${column.key}"]`)].forEach(cell => {
                     cell.style.minWidth = `${biggestWidth}px`;
-                    // cell.style.maxWidth = `${biggestWidth}px`;
                 });
             }
         });
 
         return tableElement;
+    }
+
+    getWidthToMatchOfColumn(columnKey, tableElement) {
+        if(this.fitColumnWidths[columnKey]) return this.fitColumnWidths[columnKey];
+        let columnInTable = [...tableElement.querySelectorAll(`.irtableclassic-header-cell[data-key="${columnKey}"]`)][0];
+        let filterCell = [...tableElement.querySelectorAll(`.irtableclassic-filter-cell[data-key="${columnKey}"]`)][0];
+
+        let rowDataOfLongestText = this.rowsData.reduce((max, row) => {
+            let htmlElement = htmlToElement(`<div>${row[columnKey]}</div>`);
+            let text = htmlElement.innerText;
+            let longestWord = text.split(' ').reduce((max, word) => {
+                if (word.length > max.length) return word;
+                else return max;
+            }, '');
+            let textLength = longestWord.length;
+            if (textLength > max.length) return longestWord;
+            else return max;
+        }, '');
+        console.log(`rowDataOfLongestText: ${rowDataOfLongestText}`);
+
+        let rowDataOfLongestHtml = this.rowsData.reduce((max, row) => {
+            if (row[columnKey]) {
+                let htmlLength = row[columnKey].toString().length;
+                if (htmlLength > max) return row[columnKey];
+                else return max;
+            } else return max;
+        }, 0);
+        let biggestCell = document.createElement('div');
+        biggestCell.innerHTML = 'w'.repeat(rowDataOfLongestText.length);
+        let biggestWidth = measure(biggestCell, el => getContentWidth(el));
+        let columnWidth = measure(columnInTable, el => getContentWidth(el));
+        if(columnWidth > biggestWidth) biggestWidth = columnWidth;
+        this.fitColumnWidths[columnKey] = biggestWidth;
+        return biggestWidth;
     }
 
     updateSortOrder() {
@@ -279,22 +288,28 @@ class IrTableClassic {
     }
 
     redraw() {
+        let redrawHead = false;
         let table = null;
+        let tableHead = null;
         let tableBody = null;
         let paginationElement = null;
         let tableFooter = null;
         let irtableclassicContainer = this.container.querySelector('.irtableclassic-container');
         if (this.container.querySelector('.irtableclassic')) {
             table = this.container.querySelector('.irtableclassic');
+            tableHead = this.container.querySelector('.irtableclassic-head');
             tableBody = this.container.querySelector('.irtableclassic-body');
             paginationElement = this.container.querySelector('.irtableclassic-pagination');
             tableFooter = this.container.querySelector('.irtableclassic-footer');
+            if(redrawHead) table.removeChild(tableHead);
             table.removeChild(tableFooter);
             table.removeChild(tableBody);
         }
         let newHtml = this.getHtml();
+        if(redrawHead) tableHead = newHtml.querySelector('.irtableclassic-head');
         tableBody = newHtml.querySelector('.irtableclassic-body');
         tableFooter = newHtml.querySelector('.irtableclassic-footer');
+        if(redrawHead) table.appendChild(tableHead);
         table.appendChild(tableBody);
         table.appendChild(tableFooter);
     }
