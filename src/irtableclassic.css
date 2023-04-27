@@ -57,7 +57,7 @@
     padding: 0 5px;
     overflow: hidden;
     padding: 0 10px;
-    min-width: 150px;
+    background-color: inherit;
 }
 
 .irtableclassic-cell:hover {

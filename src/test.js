@@ -67,6 +67,6 @@ window.onload = function() {
     tableContainer.classList.add('special-container');
     document.body.appendChild(tableContainer);
     let specialContainer = document.querySelector('.special-container');
-    let table = new IrTableClassic(tableData.rows, tableData.columns, specialContainer, {pagination: 100, minWidth: '1000px', height: '500px', rowHeight: '25px', selectableRows: true});
+    let table = new IrTableClassic(tableData.rows, tableData.columns, specialContainer, {pagination: 100, minWidth: '1000px', height: '500px', rowHeight: '25px', fitRowHeight: true, fitRowWidth: true, selectableRows: true});
     table.initialize();
 }

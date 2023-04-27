@@ -1,5 +1,31 @@
+function getContentWidth(element) {
+    var styles = getComputedStyle(element)
+
+    return element.clientWidth
+        - parseFloat(styles.paddingLeft)
+        - parseFloat(styles.paddingRight)
+}
+
+function htmlToElement(html) {
+    var template = document.createElement('template');
+    html = html.trim(); // Never return a text node of whitespace as the result
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function measure(el, fn) {
+    let clone = el.cloneNode(true);
+    clone.style.width = 'fit-content';
+    clone.style.visibility = 'hidden';
+    clone.style.position = 'absolute';
+    document.body.appendChild(clone);
+    var result = fn(clone);
+    clone.parentNode.removeChild(clone);
+    return result;
+}
+
 class IrTableClassic {
-    constructor(rowsData, columns, container, { pagination = null, rowHeight = '50px', maxHeight = null, headerHeight = null, filterHeight = '30px', minWidth = null, height = null, selectableRows = false, filteredByDefault = true}) {
+    constructor(rowsData, columns, container, { pagination = null, rowHeight = '50px', maxHeight = null, headerHeight = null, filterHeight = '30px', minWidth = null, height = null, selectableRows = false, filteredByDefault = true, fitRowHeight = false, fitRowWidth = false }) {
         this.rowsData = rowsData;
         this.rowsData.forEach((rowData, index) => {
             rowData.hiddenByFiltersList = [];
@@ -21,7 +47,9 @@ class IrTableClassic {
         this.filterHeight = filterHeight;
         this.minWidth = minWidth;
         this.maxHeight = maxHeight;
+        this.fitRowHeight = fitRowHeight;
         this.selectableRows = selectableRows;
+        this.fitRowWidth = fitRowWidth;
         if (height == 'match' && pagination) this.height = pagination * parseInt(rowHeight) + parseInt(headerHeight) + parseInt(filterHeight) + 'px';
         else if (height == 'match') this.height = this.rowsData.length * parseInt(rowHeight) + parseInt(headerHeight) + parseInt(filterHeight) + 'px';
         else if (height) this.height = height;
@@ -45,7 +73,7 @@ class IrTableClassic {
         filterRow.style.height = this.filterHeight;
         let headerRow = document.createElement('div');
         headerRow.classList.add('irtableclassic-header');
-        if(this.headerHeight) headerRow.style.height = this.headerHeight;
+        if (this.headerHeight) headerRow.style.height = this.headerHeight;
         this.columns.forEach(column => {
             let tableHeader = document.createElement('div');
             tableHeader.classList.add('irtableclassic-header-cell');
@@ -96,6 +124,7 @@ class IrTableClassic {
             bodyRow.dataset.index = rowData.index;
             bodyRow.classList.add('irtableclassic-data-row');
             bodyRow.style.height = this.rowHeight;
+            if (this.fitRowHeight) bodyRow.style.height = null;
             if (this.selectableRows) {
                 bodyRow.classList.add('irtableclassic-selectable');
                 bodyRow.addEventListener('click', (event) => {
@@ -119,8 +148,9 @@ class IrTableClassic {
                 let bodyRowData = document.createElement('div');
                 bodyRowData.classList.add('irtableclassic-data-cell');
                 bodyRowData.classList.add('irtableclassic-cell');
-                bodyRowData.innerHTML = rowData[column.key];
+                if(rowData[column.key] !== undefined && rowData[column.key] !== null) bodyRowData.innerHTML = rowData[column.key];
                 bodyRowData.dataset.key = column.key;
+                if (this.fitRowHeight) bodyRowData.style.height = 'fit-content';
                 bodyRow.appendChild(bodyRowData);
             });
             tableBody.appendChild(bodyRow);
@@ -149,12 +179,48 @@ class IrTableClassic {
         table.appendChild(tableFooter);
 
         this.columns.forEach(column => {
+            let minWidth = 0;
+            let longestHtmlLength = 0;
+            let longestHtmlCell = null;
             [...tableElement.querySelectorAll(`.irtableclassic-cell[data-key="${column.key}"]`)].forEach(cell => {
-                cell.style.flex = column.flex ? column.flex : '1';
-                if (column.minWidth) cell.style.minWidth = column.minWidth;
+                cell.style.flex = column.flex ? column.flex : '1 1 0';
                 cell.style.width = '0';
-            })
+            });
 
+            if (this.fitRowWidth) {
+                let rowCellOfMostHtmlLength = null;
+                let columnInTable = [...tableElement.querySelectorAll(`.irtableclassic-header-cell[data-key="${column.key}"]`)][0];
+                let maxHtmlLength = this.rowsData.reduce((max, row) => {
+                    if (row[column.key]) {
+                        let htmlLength = row[column.key].toString().length;
+                        if (htmlLength > max || rowCellOfMostHtmlLength == null) {
+                            rowCellOfMostHtmlLength = row[column.key];
+                            return htmlLength;
+                        }
+                        else return max;
+                    } else return max;
+                }, 0);
+                // [...tableElement.querySelectorAll(`.irtableclassic-data-cell[data-key="${column.key}"]`)].forEach(cell => {
+                //     let htmlLength = cell.innerHTML.length;
+                //     if (htmlLength >= longestHtmlLength) {
+                //         longestHtmlLength = htmlLength;
+                //         longestHtmlCell = cell;
+                //     }
+                //     // let elementWidth = measure(cell, el => getContentWidth(el));
+                //     // console.log(`element width: ${elementWidth}`);
+                //     // if (elementWidth > minWidth) minWidth = elementWidth;
+                // });
+                let biggestCell = document.createElement('div');
+                biggestCell.innerHTML = rowCellOfMostHtmlLength;
+                let biggestWidth = measure(biggestCell, el => getContentWidth(el));
+                let columnWidth = measure(columnInTable, el => getContentWidth(el));
+                if(columnWidth > biggestWidth) biggestWidth = columnWidth;
+                console.log(`setting ${column.key} to ${minWidth}`);
+                [...tableElement.querySelectorAll(`.irtableclassic-cell[data-key="${column.key}"]`)].forEach(cell => {
+                    cell.style.minWidth = `${biggestWidth}px`;
+                    // cell.style.maxWidth = `${biggestWidth}px`;
+                });
+            }
         });
 
         return tableElement;
